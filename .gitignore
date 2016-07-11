@@ -4,3 +4,4 @@ builds
 .vscode
 npm-debug.log
 src/.vscode
+server/build
