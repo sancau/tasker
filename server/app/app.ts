@@ -95,7 +95,6 @@ typesPUT = function(req, res) {
       res.status(404).send({'error': 'Object not found.'}); 
       return;
     }
-
     entity.name = req.body.name || entity.name;
     entity.save((e) => e ? _throw(Error(e)) : res.status(200).send(entity));
   });
@@ -131,17 +130,23 @@ typesDELETE = function(req, res) {
 ///////////////////////////////////////////////////////////////////////////////
 
 app = express();  
+app.set('view engine', 'pug');
+app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(morgan('dev'));
 
-app.route('/types')
+app.get('/', function(req, res) {
+  res.render('index');
+});
+
+app.route('api/types')
   .get(typesGET)
   .post(typesPOST)
   .put(typesPUT)
   .delete(typesDELETE)
 
-// app.route('/tasks')
+// app.route('api/tasks')
 //   .get(tasksGET)
 //   .post(tasksPOST)
 //   .put(tasksPUT)
