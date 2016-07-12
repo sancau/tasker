@@ -1,18 +1,18 @@
 {
-  "name": "server",
+  "name": "tasker",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
-    "build": "./node_modules/.bin/babel -w --presets es2015,stage-0 app/ -d  build/",
-    "dev": "nodemon ./build/app.js 3000",
+    "build": "./node_modules/.bin/babel -w --presets es2015,stage-0 src/ -d  build/",
     "prepare": "npm install && sudo typings install",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon ./build/server.js 3000"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
+    "angular": "^1.5.7",
     "body-parser": "^1.15.2",
+    "bootstrap3": "^3.3.5",
     "express": "^4.14.0",
     "mongoose": "^4.5.3",
     "morgan": "^1.7.0",

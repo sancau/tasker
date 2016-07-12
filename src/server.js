@@ -59,7 +59,7 @@ TypeModel = mongooseConnection.model('Type', typeSchema);
 TaskModel = mongooseConnection.model('Task', taskSchema);
 
 ///////////////////////////////////////////////////////////////////////////////
-// TASK TYPE ASDASD
+// TASK TYPE
 ///////////////////////////////////////////////////////////////////////////////
 
 typesGET = function(req, res) {
@@ -201,6 +201,7 @@ tasksDELETE = function(req, res) {
 
 app = express();  
 app.set('view engine', 'pug');
+app.set('views', __dirname + '/views');
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
@@ -217,6 +218,10 @@ app.route('/api/tasks')
   .post(tasksPOST)
   .put(tasksPUT)
   .delete(tasksDELETE);
+
+app.get('/', function(req, res) {
+  res.render('index');
+});
 
 ///////////////////////////////////////////////////////////////////////////////
 
