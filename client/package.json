@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "./node_modules/.bin/copyfiles ./node_modules/bootstrap3/dist/css/bootstrap.min.css src/css && ./node_modules/.bin/webpack-dev-server --content-base src --inline --hot",
+    "dev": "./node_modules/.bin/copyfiles -f node_modules/bootstrap3/dist/css/bootstrap.min.css src/css && ./node_modules/.bin/webpack-dev-server --content-base src --inline --hot",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
