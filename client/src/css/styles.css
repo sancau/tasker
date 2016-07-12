@@ -9,3 +9,12 @@
 body {
   padding-top: 20px;
 }
+
+#layout button {
+  font-size: 25px;
+}
+
+#layout p {
+  color: #777;
+  font-size: 12px;
+}
