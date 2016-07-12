@@ -1,4 +1,5 @@
 .vscode
 node_modules
 npm-debug.log
-client/build
+client/src/scripts.min.js
+client/src/css/bootstrap.min.css
