@@ -59,7 +59,7 @@ TypeModel = mongooseConnection.model('Type', typeSchema);
 TaskModel = mongooseConnection.model('Task', taskSchema);
 
 ///////////////////////////////////////////////////////////////////////////////
-// TASK TYPE
+// TYPE
 ///////////////////////////////////////////////////////////////////////////////
 
 typesGET = function(req, res) {
@@ -124,7 +124,31 @@ typesDELETE = function(req, res) {
 ///////////////////////////////////////////////////////////////////////////////
 
 tasksGET = function(req, res) {
-  TaskModel.find({}, (e, list) => e ? _throw(Error(e)) : res.send(list));
+
+  // Appending relative object to response
+  function handleList(list, cb){
+    let processedList = [];
+    for (let item of list) {
+      (function(item) {
+        TypeModel.findOne({_id: item.type}, function(e, entity) {
+          if (e) { 
+            _throw(Error(e)) 
+          }
+          if (!entity) { 
+            console.error('No entity.'); 
+            return; 
+          }
+          item.type = entity;
+          processedList.push(item);
+          if (processedList.length === list.length) {
+            cb(processedList);
+          }
+        });
+      })(item);
+    }
+  }
+
+  TaskModel.find({}, (e, list) => e ? _throw(Error(e)) : handleList(list, (processed) => res.send(processed)));
 };
 
 tasksPOST = function(req, res) {
@@ -146,6 +170,7 @@ tasksPOST = function(req, res) {
   newTask.type = type;
   newTask.comment = comment;
   newTask.room = room;
+  newTask.executionDate = new Date();
   newTask.save((e) => e ? _throw(Error(e)) : res.status(201).send(newTask));  
 };
 
@@ -206,6 +231,14 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(morgan('dev'));
+
+// CORS
+app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
 
 app.route('/api/types')
   .get(typesGET)

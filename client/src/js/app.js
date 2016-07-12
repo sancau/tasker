@@ -7,16 +7,14 @@ var appConfig = function ($stateProvider, $urlRouterProvider) {
   
   .state('tasks', {
     url: '/tasks',
-    controller: function() {
-      console.log('tasks controller');
-    },
-    template: '<h1> Задачи </h1><hr />'
+    controller: 'tasksCtrl as vm',
+    templateUrl: 'views/tasks.view.html'
   })
 
   .state('types', {
     url: '/types',
-    controller: function(){},
-    template: '<h1> Типы задач </h1><hr />'
+    controller: 'typesCtrl as vm',
+    templateUrl: 'views/types.view.html'
   });
 
 }

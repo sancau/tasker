@@ -1,0 +1,17 @@
+<h1> Задачи </h1>
+<hr> 
+<table class="table table-striped">
+  <thead>
+    <th> Время и дата </th>
+    <th> Тип задачи </th>
+    <th> Комната </th>
+    <th> Пометка </th>
+  </thead>
+  <tbody>
+    <tr ng-repeat="task in vm.tasks">
+      <td> {{ task.executionDate | date : "short" }} </td>
+      <td> {{ task.type.name }} </td>
+      <td> {{ task.room }} </td>
+      <td> {{ task.comment }} </td>
+    </tr>
+  </tbody>
