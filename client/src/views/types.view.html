@@ -1,5 +1,14 @@
-<h1> Задачи </h1>
-<hr> 
-<pre> 
-  {{ vm.types | json }}
-</pre>
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    <h4>Добавляй и редактируй типы</h4>
+  </div>
+  <div class="panel-body">
+    <table class="table table-striped">
+      <tbody>
+        <tr ng-repeat="type in vm.types">
+          <td> {{ type.name }} </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

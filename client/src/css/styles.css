@@ -1,0 +1,11 @@
+.nav-button {
+  font-size: 25px !important;
+  background-color: #efefef;
+  border-radius: 20px !important;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+body {
+  padding-top: 20px;
+}

@@ -148,7 +148,8 @@ tasksGET = function(req, res) {
     }
   }
 
-  TaskModel.find({}, (e, list) => e ? _throw(Error(e)) : handleList(list, (processed) => res.send(processed)));
+  TaskModel.find({}, (e, list) => 
+    e ? _throw(Error(e)) : handleList(list, (processed) => res.send(processed)));
 };
 
 tasksPOST = function(req, res) {

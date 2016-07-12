@@ -1,18 +1,22 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 
-var appCtrl = function() {
+var appCtrl = function($state) {
   let vm = this;
-  this.title = 'YANA';
+  vm.title = 'YANA';
+
+  vm.isActive = function(stateName) {
+    return (stateName === $state.current.name);
+  };
+
   return vm;
 }
-angular.module('app').controller('appCtrl', [appCtrl]);
+angular.module('app').controller('appCtrl', ['$state', appCtrl]);
 
 ///////////////////////////////////////////////////////////////////////////////
 
 var tasksCtrl = function($http) {
   let vm = this;
-  console.log('tasks');
 
   $http.get('http://localhost:3000/api/tasks')
   .then(
@@ -28,7 +32,6 @@ angular.module('app').controller('tasksCtrl', ['$http', tasksCtrl]);
 
 var typesCtrl = function($http) {
   let vm = this;
-  console.log('types');
 
   $http.get('http://localhost:3000/api/types')
   .then(
