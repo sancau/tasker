@@ -5,7 +5,7 @@
   "scripts": {
     "build": "./node_modules/.bin/babel -w --presets es2015,stage-0 src/ -d  build/",
     "prepare": "npm install && sudo typings install",
-    "dev": "nodemon ./build/server.js 3000"
+    "dev": "nodemon ./build/app.js 3000"
   },
   "author": "",
   "license": "MIT",
