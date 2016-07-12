@@ -2,11 +2,23 @@ var debug = process.env.NODE_ENV !== "production"
 var webpack = require('webpack');
 
 module.exports = {
-  context: __dirname,
+  context: __dirname + '/src',
   devtpol: debug ? 'inline-sourcemap' : null,
-  entry: './src/scripts.js',
+  entry: './js/scripts.js',
+  module: {
+    loaders: [
+      {
+        test: /\.js?$/,
+        loader: 'babel-loader',
+        query: {
+          presets: ['es2015', 'stage-0'],
+          plugins: ['transform-class-properties', 'transform-decorators-legacy']
+        }
+      }
+    ]
+  },  
   output: {
-    path: __dirname + '/build',
+    path: __dirname + '/src',
     filename: 'scripts.min.js'
   },
   plugins: debug ? [] : [
