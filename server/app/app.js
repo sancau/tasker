@@ -1,8 +1,6 @@
-////// <reference path="../typings/index.d.ts" />
-
 'use strict';
 
-var _throw = function(e: Error): void { throw e };
+var _throw = function(e) { throw e };
 
 var express, 
     mongoose,
@@ -58,17 +56,8 @@ TypeModel = mongooseConnection.model('Type', typeSchema);
 TaskModel = mongooseConnection.model('Task', taskSchema);
 
 ///////////////////////////////////////////////////////////////////////////////
-// TASK TYPE
+// TASK TYPE ASDASD
 ///////////////////////////////////////////////////////////////////////////////
-
-interface MongooseEntity {
-  save(e: Function): void;
-}
-
-interface TaskType extends MongooseEntity {
-  _id?: string;
-  name: string;
-}
 
 typesGET = function(req, res) {
   TypeModel.find({}, (e, list) => e ? _throw(Error(e)) : res.send(list)); 
@@ -89,7 +78,7 @@ typesPUT = function(req, res) {
     res.status(400).send({'error':'No _id provided.'}); 
     return; 
   }
-  TypeModel.findOne({_id: req.body._id}, function(e, entity: TaskType) {
+  TypeModel.findOne({_id: req.body._id}, function(e, entity) {
     if (e) { _throw(Error(e)) }
     if (!entity) { 
       res.status(404).send({'error': 'Object not found.'}); 
@@ -136,11 +125,11 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(morgan('dev'));
 
-app.get('/', function(req, res) {
-  res.render('index');
-});
+// app.get('/', function(req, res) {
+//   res.render('index');
+// });
 
-app.route('api/types')
+app.route('/api/types')
   .get(typesGET)
   .post(typesPOST)
   .put(typesPUT)
