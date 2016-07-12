@@ -142,8 +142,7 @@ tasksPOST = function(req, res) {
   if (error.length) {
     res.status(400).send(error);
     return;
-  } 
-  
+  }  
   newTask.type = type;
   newTask.comment = comment;
   newTask.room = room;
@@ -167,12 +166,10 @@ tasksPUT = function(req, res) {
       res.status(404).send({'error': 'Object not found.'}); 
       return;
     }
-    
     entity.name = req.body.name || entity.name;
     entity.type = req.body.type || entity.type;
     entity.comment = req.body.comment || entity.comment;
     entity.room = req.body.room || entity.room;
-
     entity.save((e) => e ? _throw(Error(e)) : res.status(200).send(entity));
   });
 };
