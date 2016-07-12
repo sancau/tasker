@@ -46,10 +46,13 @@ typeSchema = new mongoose.Schema({
 });
 
 taskSchema = new mongoose.Schema({
-  type: mongoose.Schema.ObjectId,
-  executionDate: Date,
+  type: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Type'
+  },
   room: Number,
-  comment: String
+  comment: String,
+  executionDate: Date
 });
 
 TypeModel = mongooseConnection.model('Type', typeSchema);
@@ -78,6 +81,10 @@ typesPUT = function(req, res) {
     res.status(400).send({'error':'No _id provided.'}); 
     return; 
   }
+  if (!req.body._id.match(/^[0-9a-fA-F]{24}$/)) {
+    res.status(400).send({'error': 'Invalid _id format.'});
+    return;
+  }
   TypeModel.findOne({_id: req.body._id}, function(e, entity) {
     if (e) { _throw(Error(e)) }
     if (!entity) { 
@@ -90,31 +97,108 @@ typesPUT = function(req, res) {
 };
 
 typesDELETE = function(req, res) {
-  if (!req.body._id) { res.status(404).send({'error': 'No _id provided.'}); }
-  else {
-    TypeModel.count({ _id: req.body._id }, function (err, count){ 
-      if (count > 0) {
-        TypeModel.remove(
-          { _id: req.body._id }, 
-          (e) => 
-            e ? _throw(Error(e)) : res.status(204).send({'data': 'Deleted.'})
-        );    
-      }
-      else {
-        res.status(404).send({'error': 'Object not found.'});
-      }
-    });
+  if (!req.body._id) { 
+    res.status(400).send({'error':'No _id provided.'}); 
+    return; 
   }
+  if (!req.body._id.match(/^[0-9a-fA-F]{24}$/)) {
+    res.status(400).send({'error': 'Invalid _id format.'});
+    return;
+  }
+  TypeModel.count({ _id: req.body._id }, function (err, count){ 
+    if (count > 0) {
+      TypeModel.remove(
+        { _id: req.body._id }, 
+        (e) => 
+          e ? _throw(Error(e)) : res.status(204).send({'data': 'Deleted.'})
+      );    
+    }
+    else {
+      res.status(404).send({'error': 'Object not found.'});
+    }
+  });
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 // TASK
 ///////////////////////////////////////////////////////////////////////////////
 
-// tasksGET = function(req, res) {};
-// tasksPOST = function(req, res) {};
-// tasksPUT = function(req, res) {};
-// tasksDELETE = function(req, res) {};
+tasksGET = function(req, res) {
+  TaskModel.find({}, (e, list) => e ? _throw(Error(e)) : res.send(list));
+};
+
+tasksPOST = function(req, res) {
+  let newTask = new TaskModel();
+  let { type, room, comment } = req.body;
+  let input = {'type': type, 'room': room, 'comment': comment};
+  
+  let error = []; 
+  for (let prop in input) {
+    if (!input[prop]) {
+      error.push(`${prop} is required.`);
+    }  
+  }
+  
+  if (error.length) {
+    res.status(400).send(error);
+    return;
+  } 
+  
+  newTask.type = type;
+  newTask.comment = comment;
+  newTask.room = room;
+  newTask.save((e) => e ? _throw(Error(e)) : res.status(201).send(newTask));  
+};
+
+tasksPUT = function(req, res) {
+  if (!req.body._id) { 
+    res.status(400).send({'error':'No _id provided.'}); 
+    return; 
+  }
+
+  if (!req.body._id.match(/^[0-9a-fA-F]{24}$/)) {
+    res.status(400).send({'error': 'Invalid _id format.'});
+    return;
+  }
+
+  TaskModel.findOne({_id: req.body._id}, function(e, entity) {
+    if (e) { _throw(Error(e)) }
+    if (!entity) { 
+      res.status(404).send({'error': 'Object not found.'}); 
+      return;
+    }
+    
+    entity.name = req.body.name || entity.name;
+    entity.type = req.body.type || entity.type;
+    entity.comment = req.body.comment || entity.comment;
+    entity.room = req.body.room || entity.room;
+
+    entity.save((e) => e ? _throw(Error(e)) : res.status(200).send(entity));
+  });
+};
+
+tasksDELETE = function(req, res) {
+  if (!req.body._id) { 
+    res.status(400).send({'error':'No _id provided.'}); 
+    return; 
+  }
+  if (!req.body._id.match(/^[0-9a-fA-F]{24}$/)) {
+    res.status(400).send({'error': 'Invalid _id format.'});
+    return;
+  }
+  TaskModel.count({ _id: req.body._id }, function (err, count){ 
+    if (count > 0) {
+      TaskModel.remove(
+        { _id: req.body._id }, 
+        (e) => 
+          e ? _throw(Error(e)) : res.status(204).send({'data': 'Deleted.'})
+      );    
+    }
+    else {
+      res.status(404).send({'error': 'Object not found.'});
+    }
+  });
+};
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -125,21 +209,17 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(morgan('dev'));
 
-// app.get('/', function(req, res) {
-//   res.render('index');
-// });
-
 app.route('/api/types')
   .get(typesGET)
   .post(typesPOST)
   .put(typesPUT)
   .delete(typesDELETE)
 
-// app.route('api/tasks')
-//   .get(tasksGET)
-//   .post(tasksPOST)
-//   .put(tasksPUT)
-//   .delete(tasksDELETE);
+app.route('/api/tasks')
+  .get(tasksGET)
+  .post(tasksPOST)
+  .put(tasksPUT)
+  .delete(tasksDELETE);
 
 ///////////////////////////////////////////////////////////////////////////////
 
