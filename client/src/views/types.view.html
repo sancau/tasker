@@ -1,14 +1,49 @@
-<div class="panel panel-primary">
-  <div class="panel-heading">
-    <h4>Добавляй и редактируй типы</h4>
-  </div>
-  <div class="panel-body">
-    <table class="table table-striped">
-      <tbody>
-        <tr ng-repeat="type in vm.types">
-          <td> {{ type.name }} </td>
-        </tr>
-      </tbody>
-    </table>
+<div ui-view>
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h4>Добавляй и редактируй типы</h4>
+    </div>
+    <div class="panel-body">
+      <pre ng-if="!vm.types.length"> Пока типов нет.. </pre>
+      <table class="table" ng-if="vm.types.length">
+        <tbody>
+          <tr ng-repeat="type in vm.types">
+            <td style="width:50px;"> 
+              <img
+                class="control-icon" 
+                src="images/pencil.svg" 
+                alt="Изменить тип"
+                style="width:30px;height:30px; opacity: 0.5;"
+                ng-click="vm.togleEditType(type)">
+            </td>
+            <td ng-show="!type.editMode"> {{ type.name }} </td>
+            <td ng-show="type.editMode"> 
+              <input class="form-control" type="text" ng-model="type.name">
+            </td>
+            <td ng-show="type.editMode"> 
+              <img 
+                class="pull-left control-icon"
+                src="images/confirm.svg" 
+                alt="Сохранить изменения"
+                style="width:30px;height:30px; opacity: 0.5;"
+                ng-click="vm.saveType(type)">
+            </td>
+            <td colspan="2">
+              <img 
+                class="pull-right control-icon"
+                src="images/bin.svg" 
+                alt="Удалить тип"
+                style="width:30px;height:30px; opacity: 0.5;"
+                ng-click="vm.deleteType(type)">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <button 
+        class="btn pull-right"
+        alt="Добавить тип"
+        ui-sref="app.newtype"> Добавить новый </button>
+    </div>
   </div>
 </div>

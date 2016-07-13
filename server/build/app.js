@@ -28,9 +28,10 @@ taskSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'Type'
   },
-  room: Number,
+  room: String,
   comment: String,
-  executionDate: Date
+  executionDate: Date,
+  isConfirmed: Boolean
 });
 
 TypeModel = mongooseConnection.model('Type', typeSchema);
@@ -179,10 +180,17 @@ tasksPOST = function tasksPOST(req, res) {
     res.status(400).send(error);
     return;
   }
+
+  if (!req.body.type.match(/^[0-9a-fA-F]{24}$/)) {
+    res.status(400).send({ 'error': 'Invalid _id format.' });
+    return;
+  }
+
   newTask.type = type;
   newTask.comment = comment;
   newTask.room = room;
   newTask.executionDate = new Date();
+  newTask.isConfirmed = false;
   newTask.save(function (e) {
     return e ? _throw(Error(e)) : res.status(201).send(newTask);
   });
@@ -211,6 +219,7 @@ tasksPUT = function tasksPUT(req, res) {
     entity.type = req.body.type || entity.type;
     entity.comment = req.body.comment || entity.comment;
     entity.room = req.body.room || entity.room;
+    entity.isConfirmed = req.body.isConfirmed || entity.isConfirmed;
     entity.save(function (e) {
       return e ? _throw(Error(e)) : res.status(200).send(entity);
     });
@@ -218,6 +227,7 @@ tasksPUT = function tasksPUT(req, res) {
 };
 
 tasksDELETE = function tasksDELETE(req, res) {
+  console.log(req.body);
   if (!req.body._id) {
     res.status(400).send({ 'error': 'No _id provided.' });
     return;

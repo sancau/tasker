@@ -1,8 +1,8 @@
 <div id="layout">
   <ul class="nav nav-pills">
     <li ng-class="{ active: vm.isActive('app.tasks') }" class="nav-button"><a ui-sref="app.tasks">Задачи</a></li>
-    <li ng-class="{ active: vm.isActive('app.types') }" class="nav-button"><a ui-sref="app.types">Типы задач</a></li>
-    <button class="btn btn-success btn-lg pull-right" ui-sref="app.tasks.new">Новая задача</button> 
+    <li ng-class="{ active: vm.isActive('app.types') || vm.isActive('app.newtype') }" class="nav-button"><a ui-sref="app.types">Типы задач</a></li>
+    <li id="newTaskBtn" ng-class="{ active: vm.isActive('app.newtask') }" class="nav-button pull-right"><a ui-sref="app.newtask">Новая задача</a></li>
   </ul>
   <div ui-view></div>
   <p> 
