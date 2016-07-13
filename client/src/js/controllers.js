@@ -18,7 +18,7 @@ angular.module('app').controller('appCtrl', ['$state', appCtrl]);
 var tasksCtrl = function($http) {
   let vm = this;
 
-  $http.get('http://localhost:3000/api/tasks')
+  $http.get('http://localhost:5555/api/tasks')
   .then(
     (response) => vm.tasks = response.data,
     (error) => console.error(error)
@@ -26,7 +26,7 @@ var tasksCtrl = function($http) {
 
   vm.confirmTask = function(task) {
     task.isConfirmed = true;
-    $http.put('http://localhost:3000/api/tasks', task)
+    $http.put('http://localhost:5555/api/tasks', task)
     .then(
       (res) => {
         console.log('task saved.')
@@ -38,7 +38,7 @@ var tasksCtrl = function($http) {
   vm.deleteTask = function(task) {
     $http({
       method: 'DELETE',
-      url: 'http://localhost:3000/api/tasks',
+      url: 'http://localhost:5555/api/tasks',
       data: {_id: task._id},
       headers: {'Content-Type': 'application/json;charset=utf-8'}
     })
@@ -62,7 +62,7 @@ angular.module('app').controller('tasksCtrl', ['$http', tasksCtrl]);
 var typesCtrl = function($http) {
   let vm = this;
 
-  $http.get('http://localhost:3000/api/types')
+  $http.get('http://localhost:5555/api/types')
   .then(
     (response) => vm.types = response.data,
     (error) => console.error(error)
@@ -71,7 +71,7 @@ var typesCtrl = function($http) {
   vm.deleteType = function(type) {
     $http({
       method: 'DELETE',
-      url: 'http://localhost:3000/api/types',
+      url: 'http://localhost:5555/api/types',
       data: {_id: type._id},
       headers: {'Content-Type': 'application/json;charset=utf-8'}
     })
@@ -87,7 +87,7 @@ var typesCtrl = function($http) {
   };
 
   vm.updateType = function(type) {    
-    $http.put('http://localhost:3000/api/types', type)
+    $http.put('http://localhost:5555/api/types', type)
     .then(
       (res) => {
         vm.togleEditType(type);
@@ -120,7 +120,7 @@ var newTaskCtrl = function($http, $state, types) {
       comment: vm.comment
     }; 
     
-    $http.post('http://localhost:3000/api/tasks', newTask)
+    $http.post('http://localhost:5555/api/tasks', newTask)
     .then(
       (res) => {
         $state.go('app.tasks');
@@ -141,7 +141,7 @@ var newTypeCtrl = function($http, $state) {
   vm.newType = {}
 
   vm.saveType = function() {    
-    $http.post('http://localhost:3000/api/types', vm.newType)
+    $http.post('http://localhost:5555/api/types', vm.newType)
     .then(
       (res) => {
         $state.go('app.types');

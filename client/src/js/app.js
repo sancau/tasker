@@ -47,7 +47,7 @@ var typesResolve = {
   types: [
     '$http',
     ($http) => {
-      return $http.get('http://localhost:3000/api/types')
+      return $http.get('http://localhost:5555/api/types')
       .then(
         (res) => res.data,
         (err) => console.error(err)
