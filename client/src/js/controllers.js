@@ -44,7 +44,10 @@ var tasksCtrl = function($http) {
     })
     .then(
       (res) => {
-        console.log('task deleted.')
+        let index = vm.tasks.indexOf(task);
+        if (index > -1) {
+          vm.tasks.splice(index, 1);
+        }
       },
       (err) => console.log(err)
     );
@@ -74,7 +77,20 @@ var typesCtrl = function($http) {
     })
     .then(
       (res) => {
-        console.log('type deleted.')
+        let index = vm.types.indexOf(type);
+        if (index > -1) {
+          vm.types.splice(index, 1);
+        }
+      },
+      (err) => console.log(err)
+    );
+  };
+
+  vm.updateType = function(type) {    
+    $http.put('http://localhost:3000/api/types', type)
+    .then(
+      (res) => {
+        vm.togleEditType(type);
       },
       (err) => console.log(err)
     );
@@ -125,7 +141,7 @@ var newTypeCtrl = function($http, $state) {
   vm.newType = {}
 
   vm.saveType = function() {    
-    $http.post('http://localhost:3000/api/types', newType)
+    $http.post('http://localhost:3000/api/types', vm.newType)
     .then(
       (res) => {
         $state.go('app.types');

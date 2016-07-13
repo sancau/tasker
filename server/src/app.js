@@ -98,6 +98,8 @@ typesPUT = function(req, res) {
 };
 
 typesDELETE = function(req, res) {
+  var ended = false;
+
   if (!req.body._id) { 
     res.status(400).send({'error':'No _id provided.'}); 
     return; 
@@ -106,16 +108,32 @@ typesDELETE = function(req, res) {
     res.status(400).send({'error': 'Invalid _id format.'});
     return;
   }
-  TypeModel.count({ _id: req.body._id }, function (err, count){ 
-    if (count > 0) {
-      TypeModel.remove(
-        { _id: req.body._id }, 
-        (e) => 
-          e ? _throw(Error(e)) : res.status(204).send({'data': 'Deleted.'})
-      );    
+
+  var deleteType = function() {
+    TypeModel.count({ _id: req.body._id }, function (err, count){ 
+      if (count > 0) {
+        TypeModel.remove(
+          { _id: req.body._id }, 
+          (e) => 
+            e ? _throw(Error(e)) : res.status(204).send({'data': 'Deleted.'})
+        );    
+      }
+      else {
+        res.status(404).send({'error': 'Object not found.'});
+      }
+    });
+  };
+
+  TaskModel.count({type: req.body._id}, function(err, count){
+    if (err) {
+      throw Error(err);
     }
-    else {
-      res.status(404).send({'error': 'Object not found.'});
+    if (count > 0) {
+      res.status(400).send({'error': `Can not delete type, 
+                      as one or more referal tasks exist in the database.`}); 
+    }
+    else{
+      deleteType();
     }
   });
 };

@@ -26,7 +26,7 @@
                 src="images/confirm.svg" 
                 alt="Сохранить изменения"
                 style="width:30px;height:30px; opacity: 0.5;"
-                ng-click="vm.saveType(type)">
+                ng-click="vm.updateType(type)">
             </td>
             <td colspan="2">
               <img 
@@ -40,10 +40,12 @@
         </tbody>
       </table>
 
-      <button 
-        class="btn pull-right"
-        alt="Добавить тип"
-        ui-sref="app.newtype"> Добавить новый </button>
+      <img 
+          class="pull-left control-icon"
+          src="images/plus.svg" 
+          alt="Новый тип"
+          style="width:50px;height:50px; opacity: 0.5;"
+          ui-sref="app.newtype">
     </div>
   </div>
 </div>
