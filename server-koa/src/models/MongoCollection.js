@@ -4,9 +4,15 @@
 const assert = require('assert')
 
 class MongoCollection {
-  constructor(db, collectionName) {
+  constructor(collectionName, excludeFields, db) {
+    let database = db == null ? MongoCollection.DB : db;
+    if (!database) {
+      throw Error('Database connection object was not passed to MongoCollection class');
+    }
+    
+    this.collection = database.collection(collectionName);
     this.collectionName = collectionName;
-    this.collection = db.collection(collectionName);
+    this.excludeFields = excludeFields;
   } 
 
   insert(data, callback) {

@@ -17,6 +17,7 @@ const MongoClient = require('mongodb').MongoClient;
 const middleware = require('./middleware');
 const routers = require('./routers');
 const User = require('./models/User');
+const MongoCollection = require('./models/MongoCollection');
 
 const MONGO_URL = `mongodb://localhost:27017/${DATABASE_NAME}`;
 
@@ -30,6 +31,7 @@ MongoClient.connect(MONGO_URL, function(err, db) {
   const app = koa();
   
   app.context.db = db;
+  MongoCollection.DB = db;
 
   // plug in all the middleware
   for (let item in middleware) {

@@ -4,21 +4,47 @@
 const MongoCollection = require('./MongoCollection');
 
 class User extends MongoCollection {
-  constructor(db) {
-    super(db, 'users');
+  constructor() {
+    const excludeFields = []; 
+    super('users', excludeFields);
   }
 
-  valid(data) {
-    return true; // TODO
+  validate() {
+    if(!this.username) {
+      return { valid: false, error: 'Username is required.'}
+    }
+    else return { valid: true, error: null };
+  }
+  
+  static getOne() {
+    throw Error('NOT IMPLEMENTED');
+  }
+  
+  static getMany() {
+    throw Error('NOT IMPLEMENTED');
   }
 
-  insert(data) {
-    if ( this.valid(data) ) {
+  insert() {
+    if (this.id) {
+      console.log('User | INVALID OPERATION -> Can not insert a user that is already in DB ... REJECT');
+      return;
+    }
+
+    let validationResult = this.validate();
+    if ( validationResult.valid ) {
       super.insert(data);
     }
     else {
-      console.log('DATA INVALID');
+      console.log(`User | INVALID DATA -> Reason: ${validationResult.error} ... VALIDATION ERROR`);
     }
+  }
+  
+  update(data) {
+    throw Error('NOT IMPLEMENTED');
+  }
+  
+  delete() {
+    throw Error('NOT IMPLEMENTED');
   }
 }
 
