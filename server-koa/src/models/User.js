@@ -26,7 +26,7 @@ class User extends MongoCollection {
     super('users', Schema);
   }
 
-  static getByID(id) {
+  static getOne(id, callback) {
     throw Error('NOT IMPLEMENTED');
   }
   

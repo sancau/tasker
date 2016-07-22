@@ -3,6 +3,11 @@
 
 const assert = require('assert')
 
+/////////////////////////////////////////////////////////////////////////////
+// Class MongoCollection hosts generic logic for DB interaction.
+// Using MongoDB native NodeJS driver.
+/////////////////////////////////////////////////////////////////////////////
+
 class MongoCollection {
   constructor(collectionName, schema) {
     let database = MongoCollection.DB;
@@ -22,7 +27,57 @@ class MongoCollection {
     this.collectionName = collectionName;
   } 
 
-  validate() {
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPOSABLE
+  /////////////////////////////////////////////////////////////////////////////
+
+  save(callback) {
+    if (this._id) {
+      this._update(callback);
+    }
+    else {
+      this._insert(callback);
+    }
+  }  
+
+  delete(callback) {
+    if (this._id) {
+      this._delete(callback);
+    }
+    else {
+      console.log('Can not delete entity that was never saved ... REJECT');
+      return;
+    }
+  }
+
+  getOne(id, callback) {
+    if (!callback || typeof(callback) !== 'function') {
+      console.log('Callback is not a function of null. Can not perform operation ... REJECT');
+      return;
+    }
+    if (this._id) {
+      this._getOne(this._id, callback);
+    }
+    else {
+      console.log('ID was not provided. Can not perform getOne() ... REJECT');
+    }
+  }
+
+  findAll(query, callback) {
+    if (!query) {
+      query = {};
+    }
+    if (!callback || typeof(callback) !== 'function') {
+      console.log('Callback is not a function of null. Can not perform operation ... REJECT');
+    }
+    this._findAll(query, callback);
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // IMPLEMENTATION
+  /////////////////////////////////////////////////////////////////////////////
+
+  _validate() {
     function strip(instance) {
       let plain = {};
       for (let field in instance.schema) {
@@ -33,8 +88,6 @@ class MongoCollection {
 
     let data = strip(this);    
     let errors = [];
-
-    // DO IT WITH MAP/FILTER | TODO ..dat is ugly :)
 
     for (let field in this.schema) {
       let fieldRules = this.schema[field];
@@ -51,15 +104,13 @@ class MongoCollection {
     else return { errors: null, data: data };
   }
 
-  insert(callback) {
-    let validationResult = this.validate();
-    if ( !validationResult.errors ) {
-      if (validationResult.data._id) {
-        console.log('INVALID OPERATION -> Can not insert an entity that is already in DB ... REJECT');
-        return;
-      }
+  /////////////////////////////////////////////////////////////////////////////
 
-      this.collection.insertOne(validationResult.data, (err, result) => {
+  _insert(callback) {
+    let validationResult = this._validate();
+    if ( !validationResult.errors ) {
+      let date = validationResult.data;
+      this.collection.insertOne(data, (err, result) => {
         assert.equal(err, null);
         assert.equal(1, result.result.n);
         assert.equal(1, result.ops.length);
@@ -79,22 +130,44 @@ class MongoCollection {
     }
   }
 
-  insertMany(dataArray, callback) {
-    
-    // TODO VALIDATION 
+  /////////////////////////////////////////////////////////////////////////////
 
-    this.collection.insertMany(dataArray, (err, result) => {
-      assert.equal(err, null)
-      assert.equal(dataArray.length, result.result.n);
-      assert.equal(dataArray.length, result.ops.length);   
+  _update(callback) {
+    let validationResult = this.validate();
+    if ( !validationResult.errors ) {
+      let date = validationResult.data;
+      this.collection.updateOne({ _id: data._id }, { $set: data }, (err, result) => {
+        assert.equal(err, null);
+        assert.equal(1, result.result.n);
+        assert.equal(1, result.ops.length);
+        
+        console.log(`Inserted document into the ${this.collectionName} collection ... OK`);
+        
+        if (callback) {
+          callback(result);
+        }
 
-      console.log(`Inserted ${dataArray.length} documents into the ${this.collectionName} collection ... OK`);
-
-      if (callback) {
-        callback(result);
+      });
+    }
+    else {
+      for (let error of validationResult.errors) {
+        console.log(`INVALID DATA -> Reason: ${error} ... VALIDATION ERROR`);
       }
+    }
+  }
 
-    });
+  /////////////////////////////////////////////////////////////////////////////
+
+  _delete(callback) {
+    throw Error('NOT IMPLEMENTED');
+  }
+
+  _getOne(id) {
+    throw Error('NOT IMPLEMENTED');
+  }
+
+  _findAll(query) {
+    throw Error('NOT IMPELEMENTED');
   }
 }
 

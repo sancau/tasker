@@ -46,4 +46,8 @@ MongoClient.connect(MONGO_URL, function(err, db) {
 
   app.listen(PORT, () => console.log(`Listening on ${PORT} ... OK`));
 
+  let u = new User();
+  u.username = 'asasdasdasd';
+  u.save();
+  
 });
