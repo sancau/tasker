@@ -3,8 +3,8 @@
 
 const MongoCollection = require('./MongoCollection');
 
-class UserCollection extends MongoCollection {
-  constructor() {
+class User extends MongoCollection { 
+  constructor(username, email) {
     const Schema = {
       username: [
         {
@@ -24,7 +24,18 @@ class UserCollection extends MongoCollection {
       ]
     };
     super('users', Schema);
+    
+    this.username = username;
+    this.email = email;
+  }
+  
+  static getByID(id) {
+    return MongoCollection.getByID(id, 'users');
+  }
+  
+  static findAll(query) {
+    return MongoCollection.findAll(query, 'users');
   }
 }
 
-module.exports = UserCollection;
+module.exports = User;

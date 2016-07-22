@@ -48,13 +48,23 @@ MongoClient.connect(MONGO_URL, function(err, db) {
 
   /////////////////for TESTING///////////////////////////////////////////////
   
-  var UserCollection = require('./models/UserCollection');
-  let collection = new UserCollection();
+  var User = require('./models/User');
+  
+  let u = new User('sancau25');
+  u.save(); 
+ 
 
-  collection.insert( { username: 'usernam' } ).then((e) => console.log(e), (r) => console.log(r));
-  // collection.findAll().then((e) => console.log(e), (r) => console.log(r));
-  // collection.getById('57923fc8840c6a6d621d5a80').then((e) => console.log(e), (r) => console.log(r));
+  // collection.insert( { username: '131231231231231', email: 'someemail' } ).then((e) => console.log(e), (r) => console.log(r));
+  // User.findAll().then((e) => console.log(e), (r) => console.log(r));
+  // collection.getById('57928d536176421ad523aea5')
+  // .then((e) => console.log(e), (r) => console.log(r));
 
   // TODO Remove, Update 
+  
+  // collection.update('57928ef4d950a11d84accd14', { username: 'sancausancau', email: '42' }).then((e)=>console.log(e), (r)=>console.log(r));  
+  // collection.remove('57928ef4d950a11d84accd14')
+  // .then((e) => console.log(e), (r) => console.log(r));
+   
+   
   
 }); 

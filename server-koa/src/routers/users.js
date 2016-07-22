@@ -2,15 +2,14 @@
 'use strict';
 
 const koaRouter = require('koa-router');
-const UserCollection = require('../models/UserCollection.js');
+const User = require('../models/User.js');
 
 const router = koaRouter();
 
 const URL = '/';
 
 function *get(next) {
-  let collection = new UserCollection();
-  let users = yield collection.findAll();
+  let users = yield User.findAll();
   this.body = users;
 }
 
