@@ -30,7 +30,7 @@ MongoClient.connect(MONGO_URL, function(err, db) {
   
   const app = koa();
   
-  app.context.db = db;
+  // attach DB connection to the app's DA layer class
   MongoCollection.DB = db;
 
   // plug in all the middleware
@@ -45,8 +45,5 @@ MongoClient.connect(MONGO_URL, function(err, db) {
   }
 
   app.listen(PORT, () => console.log(`Listening on ${PORT} ... OK`));
-
-  let user = new User(db);
-  user.insert({name: 'sancau'});
 
 });

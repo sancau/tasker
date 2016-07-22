@@ -5,45 +5,32 @@ const MongoCollection = require('./MongoCollection');
 
 class User extends MongoCollection {
   constructor() {
-    const excludeFields = []; 
-    super('users', excludeFields);
+    const Schema = {
+      username: [
+        {
+          valid: (value) => Boolean(value),          
+          error: 'Field "username" is required for a User instance'
+        },
+        {
+          valid: (value) => value.length > 7,
+          error: 'Field "username" length must be more then 7 chars'
+        }
+      ],
+      email: [
+        {
+          valid: (value) => Boolean(value),
+          error: 'Field "email" is required for a User instance'
+        }
+      ]
+    };
+    super('users', Schema);
   }
 
-  validate() {
-    if(!this.username) {
-      return { valid: false, error: 'Username is required.'}
-    }
-    else return { valid: true, error: null };
-  }
-  
-  static getOne() {
+  static getByID(id) {
     throw Error('NOT IMPLEMENTED');
   }
   
-  static getMany() {
-    throw Error('NOT IMPLEMENTED');
-  }
-
-  insert() {
-    if (this.id) {
-      console.log('User | INVALID OPERATION -> Can not insert a user that is already in DB ... REJECT');
-      return;
-    }
-
-    let validationResult = this.validate();
-    if ( validationResult.valid ) {
-      super.insert(data);
-    }
-    else {
-      console.log(`User | INVALID DATA -> Reason: ${validationResult.error} ... VALIDATION ERROR`);
-    }
-  }
-  
-  update(data) {
-    throw Error('NOT IMPLEMENTED');
-  }
-  
-  delete() {
+  static findAll(query) {
     throw Error('NOT IMPLEMENTED');
   }
 }
