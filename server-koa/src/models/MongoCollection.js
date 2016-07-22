@@ -2,10 +2,12 @@
 'use strict';
 
 const assert = require('assert')
+const Promise = require('bluebird');
+const ObjectID = require('mongodb').ObjectID;
 
 /////////////////////////////////////////////////////////////////////////////
-// Class MongoCollection hosts generic logic for DB interaction.
-// Using MongoDB native NodeJS driver.
+// MongoCollection hosts generic logic for DB interaction.
+// Using MongoDB native NodeJS driver and Bluebird.
 /////////////////////////////////////////////////////////////////////////////
 
 class MongoCollection {
@@ -28,65 +30,44 @@ class MongoCollection {
   } 
 
   /////////////////////////////////////////////////////////////////////////////
-  // EXPOSABLE
+  // EXPOSABLE ('INTERFACE')
   /////////////////////////////////////////////////////////////////////////////
 
-  save(callback) {
-    if (this._id) {
-      this._update(callback);
-    }
-    else {
-      this._insert(callback);
-    }
+  insert(data) {
+    return this._insert(data);
   }  
 
-  delete(callback) {
-    if (this._id) {
-      this._delete(callback);
-    }
-    else {
-      console.log('Can not delete entity that was never saved ... REJECT');
-      return;
-    }
+  update(data) {
+    return this._update(data);
   }
 
-  getOne(id, callback) {
-    if (!callback || typeof(callback) !== 'function') {
-      console.log('Callback is not a function of null. Can not perform operation ... REJECT');
-      return;
-    }
-    if (this._id) {
-      this._getOne(this._id, callback);
-    }
-    else {
-      console.log('ID was not provided. Can not perform getOne() ... REJECT');
-    }
+  remove(id) {
+    return this._remove(id);
   }
 
-  findAll(query, callback) {
-    if (!query) {
-      query = {};
-    }
-    if (!callback || typeof(callback) !== 'function') {
-      console.log('Callback is not a function of null. Can not perform operation ... REJECT');
-    }
-    this._findAll(query, callback);
+  getById(id) {
+    return this._getById(id);
+
+  }
+
+  findAll(query) {
+    return this._findAll(query);
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // IMPLEMENTATION
+  // IMPLEMENTATION ('PRIVATE')
   /////////////////////////////////////////////////////////////////////////////
 
-  _validate() {
+  _validate(data) {
     function strip(instance) {
       let plain = {};
       for (let field in instance.schema) {
-        plain[field] = instance[field];
+        plain[field] = data[field];
       }
       return plain;
     }
 
-    let data = strip(this);    
+    data = strip(this, data);    
     let errors = [];
 
     for (let field in this.schema) {
@@ -106,68 +87,81 @@ class MongoCollection {
 
   /////////////////////////////////////////////////////////////////////////////
 
-  _insert(callback) {
-    let validationResult = this._validate();
-    if ( !validationResult.errors ) {
-      let date = validationResult.data;
-      this.collection.insertOne(data, (err, result) => {
-        assert.equal(err, null);
-        assert.equal(1, result.result.n);
-        assert.equal(1, result.ops.length);
-        
-        console.log(`Inserted document into the ${this.collectionName} collection ... OK`);
-        
-        if (callback) {
-          callback(result);
-        }
-
-      });
-    }
-    else {
-      for (let error of validationResult.errors) {
-        console.log(`INVALID DATA -> Reason: ${error} ... VALIDATION ERROR`);
+  _insert(data) {
+    return new Promise((resolve, reject) => {
+      let validationResult = this._validate(data);
+      if ( !validationResult.errors ) {
+        let data = validationResult.data;
+        this.collection.insertOne(data, (err, result) => {
+          assert.equal(err, null);
+          assert.equal(1, result.result.n);
+          assert.equal(1, result.ops.length);
+          console.log(`Inserted document into the ${this.collectionName} collection ... OK`);
+          if (err !== null) return reject(err);
+          resolve(result);
+        });
       }
-    }
+      else reject(validationResult.errors);
+    });
   }
 
   /////////////////////////////////////////////////////////////////////////////
 
-  _update(callback) {
-    let validationResult = this.validate();
-    if ( !validationResult.errors ) {
-      let date = validationResult.data;
-      this.collection.updateOne({ _id: data._id }, { $set: data }, (err, result) => {
-        assert.equal(err, null);
-        assert.equal(1, result.result.n);
-        assert.equal(1, result.ops.length);
-        
-        console.log(`Inserted document into the ${this.collectionName} collection ... OK`);
-        
-        if (callback) {
-          callback(result);
-        }
-
-      });
-    }
-    else {
-      for (let error of validationResult.errors) {
-        console.log(`INVALID DATA -> Reason: ${error} ... VALIDATION ERROR`);
+  _update(data) {
+    return new Promise((resolve, reject) => {
+      let validationResult = this._validate(data);
+      if ( !validationResult.errors ) {
+        let data = validationResult.data;
+        this.collection.updateOne({ _id: data._id }, { $set: data }, (err, result) => {
+          assert.equal(err, null);
+          // assert.equal(1, result.result.n);
+          // assert.equal(1, result.ops.length);
+          console.log(`Inserted document into the ${this.collectionName} collection ... OK`);
+          if (err !== null) return reject(err);
+          resolve(result);
+        });
       }
-    }
+      else reject(validationResult.errors);
+    });
   }
 
   /////////////////////////////////////////////////////////////////////////////
 
-  _delete(callback) {
-    throw Error('NOT IMPLEMENTED');
+  _remove(id) {
+    return new Promise((resolve, reject) => {
+      this.collection.deleteOne({ _id: id }, (err, result) => {
+        assert.equal(err, null);
+        // assert.equal(1, result.result.n);
+        console.log(`Removed entity with id ${id} from the ${this.collectionName} collection ... OK`);
+        if (err !== null) return reject(err);
+        resolve(result);
+      });
+    });
   }
 
-  _getOne(id) {
-    throw Error('NOT IMPLEMENTED');
+  /////////////////////////////////////////////////////////////////////////////
+
+  _getById(id) {
+    return new Promise((resolve, reject) => {
+      this.collection
+      .findOne({ '_id': new ObjectID(id) }, (err, doc) => {
+        if (err !== null) return reject(err);
+        resolve(doc);
+      });
+    }); 
   }
+  
+  /////////////////////////////////////////////////////////////////////////////
 
   _findAll(query) {
-    throw Error('NOT IMPELEMENTED');
+    return new Promise((resolve, reject) => {
+      this.collection
+      .find(query)
+      .toArray((err, docs) => {
+        if (err !== null) return reject(err);
+        resolve(docs);
+      });
+    });
   }
 }
 

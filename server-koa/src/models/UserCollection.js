@@ -3,7 +3,7 @@
 
 const MongoCollection = require('./MongoCollection');
 
-class User extends MongoCollection {
+class UserCollection extends MongoCollection {
   constructor() {
     const Schema = {
       username: [
@@ -12,7 +12,7 @@ class User extends MongoCollection {
           error: 'Field "username" is required for a User instance'
         },
         {
-          valid: (value) => value.length > 7,
+          valid: (value) => value != null ? value.length > 7 : false,
           error: 'Field "username" length must be more then 7 chars'
         }
       ],
@@ -25,14 +25,6 @@ class User extends MongoCollection {
     };
     super('users', Schema);
   }
-
-  static getOne(id, callback) {
-    throw Error('NOT IMPLEMENTED');
-  }
-  
-  static findAll(query) {
-    throw Error('NOT IMPLEMENTED');
-  }
 }
 
-module.exports = User;
+module.exports = UserCollection;

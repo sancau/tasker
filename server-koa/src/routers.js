@@ -4,5 +4,5 @@
 const routersDir = './routers/'
 
 module.exports = {
-  index: require(`${routersDir}index`)
+  users: require(`${routersDir}users`)
 };

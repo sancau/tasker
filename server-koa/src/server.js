@@ -16,7 +16,6 @@ const MongoClient = require('mongodb').MongoClient;
 
 const middleware = require('./middleware');
 const routers = require('./routers');
-const User = require('./models/User');
 const MongoCollection = require('./models/MongoCollection');
 
 const MONGO_URL = `mongodb://localhost:27017/${DATABASE_NAME}`;
@@ -46,8 +45,16 @@ MongoClient.connect(MONGO_URL, function(err, db) {
 
   app.listen(PORT, () => console.log(`Listening on ${PORT} ... OK`));
 
-  let u = new User();
-  u.username = 'asasdasdasd';
-  u.save();
+
+  /////////////////for TESTING///////////////////////////////////////////////
   
-});
+  var UserCollection = require('./models/UserCollection');
+  let collection = new UserCollection();
+
+  collection.insert( { username: 'usernam' } ).then((e) => console.log(e), (r) => console.log(r));
+  // collection.findAll().then((e) => console.log(e), (r) => console.log(r));
+  // collection.getById('57923fc8840c6a6d621d5a80').then((e) => console.log(e), (r) => console.log(r));
+
+  // TODO Remove, Update 
+  
+}); 
