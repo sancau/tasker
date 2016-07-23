@@ -10,8 +10,8 @@ const ObjectID = require('mongodb').ObjectID;
 /////////////////////////////////////////////////////////////////////////////
 
 class MongoCollection {
-  constructor(collectionName, schema) {
-    let database = MongoCollection.DB;
+  constructor(collectionName, schema, dbConnection) {
+    let database = dbConnection || MongoCollection.DB;
 
     if (!database) {
       throw Error('Database connection object was not passed to MongoCollection class');
@@ -32,19 +32,20 @@ class MongoCollection {
   // INNER IMPLEMENTATION ('PRIVATE')
   ///////////////////////////////////////////////////////////////////////////// 
 
-  _validate(data) {
-    function strip(instance) {
-      let plain = {};
-      for (let field in instance.schema) {
+  _strip(data) {
+    let plain = {};
+    for (let field in this.schema) {
+      if (data[field] != null) {
         plain[field] = data[field];
       }
-      return plain;
     }
-
-    data = strip(this, data);    
+    return plain;
+  }
+  
+  _validateGeneric(data, fieldSet) {
+    data = this._strip(data);    
     let errors = [];
-
-    for (let field in this.schema) {
+    for (let field in fieldSet) {
       let fieldRules = this.schema[field];
       for (let rule of fieldRules) {
         if (!rule.valid(data[field])) {
@@ -52,67 +53,66 @@ class MongoCollection {
         }
       }
     }
-
     if(errors.length > 0) {
       return { errors: errors, data: null };
     }
     else return { errors: null, data: data };
   }
-
-  _insert(data) {
-    return new Promise((resolve, reject) => {
-      let validationResult = this._validate(data);
-      if ( !validationResult.errors ) {
-        let document = validationResult.data;
-        resolve(this.collection.insertOne(document));
-      }
-      else reject(validationResult.errors);
-    });
-  }  
-
-  _update(data) {
-    return new Promise((resolve, reject) => {
-      let validationResult = this._validate(data);
-      if ( !validationResult.errors ) {
-        let document = validationResult.data;
-        resolve(this.collection.updateOne(
-          {_id: ObjectID(document._id)}, {$set: document}));
-      }
-      else reject(validationResult.errors);
-    });
+  
+  _validateInsert(data) {
+    let fieldSet = this.schema;
+    return this._validateGeneric(data, fieldSet);
   }
   
+  _validateUpdate(data) {
+    let fieldSet = data;
+    return this._validateGeneric(data, fieldSet);
+  }
+
   
   /////////////////////////////////////////////////////////////////////////////
   // EXPOSABLE ('INTERFACE')
   /////////////////////////////////////////////////////////////////////////////
   
-  save() {
-    if (this._id) {
-      return this._update(this);
-    }
-    else {
-      return this._insert(this);
-    }
+  insert(data) {
+    return new Promise((resolve, reject) => {
+      let validationResult = this._validateInsert(data);
+      if ( !validationResult.errors ) {
+        let document = validationResult.data;
+        resolve(this.collection.insertOne(document));
+      }
+      else reject({
+        validationErrors: validationResult.errors
+      });
+    });
+  }  
+
+  update(id, data) {
+    return new Promise((resolve, reject) => {
+      let validationResult = this._validateUpdate(data);
+      if ( !validationResult.errors ) {
+        let document = validationResult.data;
+        resolve(this.collection.updateOne(
+          {_id: ObjectID(id)}, {$set: document}));
+      }
+      else reject({
+        validationErrors: validationResult.errors
+      });
+    });
   }
 
   remove(id) {
     return this.collection.remove({ _id: ObjectID(id) });
   }
 
-  static getById(id, collectionName) {
-    return MongoCollection
-           .DB
-           .collection(collectionName)
-           .findOne({ _id: ObjectID(id) });
+  getByID(id) {
+    return this.collection.findOne({ _id: ObjectID(id) });
   }
 
-  static findAll(query, collectionName) {
-    return MongoCollection
-           .DB
-           .collection(collectionName)
-           .find(query).toArray();
+  findAll(query) {
+    return this.collection.find(query).toArray();
   }
 }
+
 
 module.exports = MongoCollection;

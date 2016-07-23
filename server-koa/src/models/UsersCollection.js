@@ -3,8 +3,8 @@
 
 const MongoCollection = require('./MongoCollection');
 
-class User extends MongoCollection { 
-  constructor(username, email) {
+class UsersCollection extends MongoCollection { 
+  constructor(dbConnection) {
     const Schema = {
       username: [
         {
@@ -20,22 +20,15 @@ class User extends MongoCollection {
         {
           valid: (value) => Boolean(value),
           error: 'Field "email" is required for a User instance'
+        },
+        {
+          valid: (value) => value != null ? value.indexOf('@') > -1 : false,
+          error: 'Email address is invalid'
         }
       ]
     };
-    super('users', Schema);
-    
-    this.username = username;
-    this.email = email;
-  }
-  
-  static getByID(id) {
-    return MongoCollection.getByID(id, 'users');
-  }
-  
-  static findAll(query) {
-    return MongoCollection.findAll(query, 'users');
+    super('users', Schema, dbConnection);
   }
 }
 
-module.exports = User;
+module.exports = UsersCollection;
