@@ -2,16 +2,16 @@
 'use strict';
 
 const koaRouter = require('koa-router');
-const UsersCollection = require('../models/UsersCollection.js');
+const CategoriesCollection = require('../models/CategoriesCollection.js');
 
 const router = koaRouter();
-const URL = '/users';
+const URL = '/categories';
 
 /////////////////////////////////////////////////////////////////////////////
 
 function *getAll(next) {
   try {
-    let collection = new UsersCollection();
+    let collection = new CategoriesCollection();
     let entities = yield collection.findAll();  
     this.body = entities;
   } catch (err) {
@@ -26,7 +26,7 @@ function *getAll(next) {
 function *post(next) {
   try {
     let data = this.request.body;
-    let collection = new UsersCollection();
+    let collection = new CategoriesCollection();
     yield collection.insert(data);
     this.status = 201
   } catch (err) {
@@ -45,7 +45,7 @@ function *post(next) {
 function *getOne(next) {
   try {
     let id = this.params.id;
-    let collection = new UsersCollection();
+    let collection = new CategoriesCollection();
     let entity = yield collection.getByID(id);
     if (entity) {
       this.body = entity;
@@ -66,7 +66,7 @@ function *put(next) {
   try {
     let id = this.params.id;
     let data = this.request.body;
-    let collection = new UsersCollection();
+    let collection = new CategoriesCollection();
     let entity = yield collection.getByID(id);
     if (entity) {
       yield collection.update(entity._id, data);
@@ -91,7 +91,7 @@ function *put(next) {
 function *del(next) {
   try {
     let id = this.params.id;
-    let collection = new UsersCollection();
+    let collection = new CategoriesCollection();
     let entity = yield collection.getByID(id);
     if (entity) {
       yield collection.remove(id);
