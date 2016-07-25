@@ -4,8 +4,6 @@
 const koaRouter = require('koa-router');
 const controllers = require('../../controllers')
 
-const router = koaRouter();
-
 function genericRouter(url, model) {
   const router = koaRouter();
   router.get(url, controllers.generic.getAll(model));
