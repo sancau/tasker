@@ -10,7 +10,7 @@ const endpoints = {
   
   categories: {
     url: `${baseUrl}/categories`,
-    router: routers.generic,
+    router: routers.generic.crud,
     model: models.Category
   },
 

@@ -2,7 +2,7 @@
 'use strict';
 
 const koaRouter = require('koa-router');
-const controllers = require('../controllers')
+const controllers = require('../../controllers')
 
 const router = koaRouter();
 

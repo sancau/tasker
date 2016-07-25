@@ -1,8 +1,6 @@
 
 'use strict';
 
-const assert = require('assert');
-
 module.exports = function* Logger(next) {
   if (!this.state.start) {
     this.state.start = new Date;
