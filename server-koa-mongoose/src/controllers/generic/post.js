@@ -5,7 +5,8 @@ function post(model) {
   return function *(next) {
     try {
       let entity = new model(this.request.body);
-      yield entity.save();
+      let document = yield entity.save();
+      this.body = document;
       this.status = 201;
     } 
     catch (err) {

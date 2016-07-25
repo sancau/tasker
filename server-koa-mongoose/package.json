@@ -1,12 +1,12 @@
 {
   "name": "server-koa-mongoose",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": "REST API server side implementation using Koa, Mongoose and Bluebird.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["koa", "bluebird", "mongoose", "rest", "api", "promise", "generators"],
+  "author": "github.com/sancau",
   "license": "MIT",
   "dependencies": {
     "bluebird": "^3.4.1",

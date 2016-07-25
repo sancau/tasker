@@ -11,7 +11,8 @@ function put(model) {
         for (let key in data) {
           document[key] = data[key];
         }
-        yield document.save();
+        let updated = yield document.save();
+        this.body = updated;
         this.status = 200;
       }
       else {
