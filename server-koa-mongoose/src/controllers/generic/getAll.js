@@ -7,8 +7,7 @@ function getAll(model) {
       this.body = yield model.find({}); 
     } 
     catch (err) {
-      console.log(err);
-      this.body = err;
+      console.error(err);
       this.status = 500;
     }
   }

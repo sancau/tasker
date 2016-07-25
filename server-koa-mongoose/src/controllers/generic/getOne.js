@@ -7,8 +7,7 @@ function getOne(model) {
       this.body = yield model.findById(this.params.id); 
     } 
     catch (err) {
-      console.log(err);
-      this.body = err;
+      console.error(err);
       this.status = 500;
     }
   }

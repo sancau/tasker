@@ -9,9 +9,15 @@ function post(model) {
       this.status = 201;
     } 
     catch (err) {
-      console.log(err);
-      this.body = err;
-      this.status = 500;
+      console.error(err);
+      if (err.name === 'ValidationError') {
+        this.body = err.errors;
+        this.status = 400;
+      }
+      else {
+        console.error(err);
+        this.status = 500;
+      }
     }
   }
 };

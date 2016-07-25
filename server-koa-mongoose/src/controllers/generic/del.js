@@ -15,8 +15,7 @@ function del(model) {
       }
     } 
     catch (err) {
-      console.log(err);
-      this.body = err;
+      console.error(err);
       this.status = 500;
     }
   }

@@ -19,9 +19,14 @@ function put(model) {
       }
     } 
     catch (err) {
-      console.log(err);
-      this.body = err;
-      this.status = 500;
+      console.error(err);
+      if (err.name === 'ValidationError') {
+        this.body = err.errors;
+        this.status = 400;
+      }
+      else {
+        this.status = 500;
+      }
     }
   }
 };
