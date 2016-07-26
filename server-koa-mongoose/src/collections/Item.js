@@ -10,10 +10,8 @@ let itemSchema = new Schema({
   category: { type: Schema.Types.ObjectId, ref: 'category', required: true }
 });
 
-let populate = ['category'];
-
 module.exports = {
   model: mongoose.model('item', itemSchema),
-  populate: populate
+  populate: ['category']
 };
  
