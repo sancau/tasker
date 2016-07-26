@@ -1,1 +1,105 @@
-<h1> {{ vm.test }} </h1>
+<div class="panel panel-primary ngDialog-contents">
+  <div class="panel-heading">
+    <h4> Чтобы ничего не забыть.. </h4>
+  </div>
+  <div class="panel-body">
+    
+    <pre ng-if="!vm.categories.length && !vm.newCategoryMode"> Нет ни одной категории.. </pre>
+
+    <accordion close-others="true" ng-repeat="category in vm.categories">
+      <accordion-group 
+        heading="{{ vm.getCategoryHeading(category) }}"
+        is-open="false"
+        is-disabled="false">
+        
+        <pre ng-if="!category.items.length && !category.newItemMode"> Ничего нет.. </pre>
+        <table class="table" ng-if="category.items.length">
+          <thead>
+            <th> Что </th>
+            <th> Сколько </th>
+            <th> Цена </th>
+            <th> Стоймость </th>
+            <th></th>
+            <th></th>
+          </thead>
+          <tbody>
+            <tr ng-repeat="item in category.items" ng-class="{ success: item.confirmed }">
+              <td> {{ item.name }} </td>
+              <td> {{ item.quantity || '-' }} </td>
+              <td> {{ item.price || '-' }} </td>
+              <td> {{ (item.quantity * item.price) || '-' }} </td>
+              <td ng-if="!item.confirmed">
+                <img 
+                  class="pull-right control-icon"
+                  src="images/confirm.svg" 
+                  alt="Готово"
+                  style="width:30px;height:30px; opacity: 0.5;"
+                  ng-click="vm.confirmItem(item)">
+              </td>
+              <td colspan="2">
+                <img 
+                  class="pull-right control-icon"
+                  src="images/bin.svg" 
+                  alt="Удалить"
+                  style="width:30px;height:30px; opacity: 0.5;"
+                  ng-click="vm.deleteItem(item, category)">
+              </td>
+            </tr>
+          </tbody>
+        </table> 
+        
+        <div ng-if="!category.newItemMode"> 
+          <img 
+              class="control-icon"
+              src="images/plus.svg" 
+              alt="Новый предмет"
+              style="width:30px;height:30px; opacity: 0.5;"
+              ng-click="vm.toggleNewItemMode(category)">
+          <img 
+              ng-if="!category.items.length"
+              class="pull-right control-icon"
+              src="images/bin.svg" 
+              alt="Удалить"
+              style="width:30px;height:30px; opacity: 0.5;"
+              ng-click="vm.deleteCategory(category)">
+        </div>
+        
+        <div class="width600" ng-if="category.newItemMode">
+          <div class="form-group">
+            <label class="control-label"> Что </label>
+            <input type="text" class="form-control" ng-model="category.newItem.name">
+          </div>
+          <div class="form-group">
+            <label class="control-label"> Сколько </label>
+            <input type="number" class="form-control" ng-model="category.newItem.quantity">
+          </div>
+          <div class="form-group">
+            <label class="control-label"> Цена штуки </label>
+            <input type="number" class="form-control" ng-model="category.newItem.price">
+          </div>   
+          <button class="btn btn-success" ng-click="vm.addItem(category)"> Добавить </button>
+          <button class="btn btn-danger" ng-click="vm.toggleNewItemMode(category)"> Назад </button>
+        </div> 
+      
+      </accordion-group>
+    </accordion>
+
+    <div ng-if="!vm.newCategoryMode"> 
+      <img 
+          class="control-icon"
+          src="images/plus.svg" 
+          alt="Новая категория"
+          style="width:50px;height:50px; opacity: 0.5;"
+          ng-click="vm.toggleNewCategoryMode()">
+    </div>
+    <div class="width600" ng-if="vm.newCategoryMode">
+      <div class="form-group">
+        <label class="control-label"> Название категории </label>
+        <input type="text" class="form-control" ng-model="vm.newCategory.name">
+      </div>   
+      <button class="btn btn-success" ng-click="vm.addCategory()"> Добавить </button>
+      <button class="btn btn-danger" ng-click="vm.toggleNewCategoryMode()"> Назад </button>
+    </div>
+    
+  </div>
+</div>

@@ -1,7 +1,7 @@
 
 'use strict';
 
-var appConfig = function ($stateProvider, $urlRouterProvider) {
+const appConfig = function ($stateProvider, $urlRouterProvider) {
   
   $urlRouterProvider.otherwise('/tasks');
 
@@ -40,17 +40,23 @@ var appConfig = function ($stateProvider, $urlRouterProvider) {
     .state('app.itemslist', {
       url: 'itemslist',
       controller: 'itemsListCtrl as vm',
-      templateUrl: 'views/itemslist.view.html'  
+      templateUrl: 'views/itemslist.view.html',
+      resolve: itemslist  
     })
   
 };
 
 angular
-  .module('app', ['ui.router'])
+  .module('app', ['ui.router', 'ui.bootstrap', 'ngAnimate'])
   .config(['$stateProvider', '$urlRouterProvider', appConfig])
   .constant('BASE_API_URL', 'http://localhost:2500/api');
   
-var taskgroups = {
+  
+///////////////////////////////////////////////////////////////////////////////  
+// Resolves  
+///////////////////////////////////////////////////////////////////////////////  
+  
+const taskgroups = {
   types: [
     'Collection',
     (Collection) => {
@@ -63,3 +69,28 @@ var taskgroups = {
     }
   ]
 };
+
+const itemslist = {
+  items: [
+    'Collection',
+    (Collection) => {
+      let c = new Collection('items');
+      return c.getAll()
+      .then(
+        (res) => res.data,
+        (e) => console.error(e) 
+      )
+    }
+  ],
+  categories: [
+    'Collection',
+    (Collection) => {
+      let c = new Collection('categories');
+      return c.getAll()
+      .then(
+        (res) => res.data,
+        (e) => console.error(e) 
+      )
+    }
+  ]
+}
