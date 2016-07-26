@@ -1,17 +1,20 @@
 
 'use strict';
 
-function put(model) {
+function put(collection) {
   return function *(next) {
     try {
       let id = this.params.id;
       let data = this.request.body;
-      let document = yield model.findById(id);
+      let document = yield collection.model.findById(id);        
       if (document) {
         for (let key in data) {
           document[key] = data[key];
         }
-        let updated = yield document.save();
+        yield document.save();
+        let updated = yield collection.model
+          .findById(id)
+          .populate(collection.populate || []);
         this.body = updated;
         this.status = 200;
       }

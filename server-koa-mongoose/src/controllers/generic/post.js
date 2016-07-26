@@ -1,12 +1,16 @@
 
 'use strict';
 
-function post(model) {
+function post(collection) {
   return function *(next) {
     try {
-      let entity = new model(this.request.body);
-      let document = yield entity.save();
-      this.body = document;
+      let entity = new collection.model(this.request.body);
+      let document = yield entity.save()
+
+      this.body = yield collection.model
+        .findById(document._id)
+        .populate(collection.populate || []);
+
       this.status = 201;
     } 
     catch (err) {

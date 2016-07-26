@@ -1,10 +1,12 @@
 
 'use strict';
 
-function getAll(model) {
+function getAll(collection) {
   return function *(next) {
     try { 
-      this.body = yield model.find({}); 
+      this.body = yield collection.model
+        .find({})
+        .populate(collection.populate || []); 
     } 
     catch (err) {
       console.error(err);

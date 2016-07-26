@@ -59,7 +59,7 @@ mongoose.connect(MONGO_URL)
       for (let item in endpoints) {
         console.log(`Starting ${item} endpoint ... INFO`);
         let endpoint = endpoints[item];
-        let router = endpoint.router(endpoint.url, endpoint.model);
+        let router = endpoint.router(endpoint.url, endpoint.collection);
         app.use(router.routes());
         app.use(router.allowedMethods());
         console.log(`Endpoint ${endpoint.url} up and running ... OK`);

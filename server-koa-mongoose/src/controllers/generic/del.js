@@ -1,11 +1,11 @@
 
 'use strict';
 
-function del(model) {
+function del(collection) {
   return function *(next) {
     try {
       let id = this.params.id;
-      let document = yield model.findById(id);
+      let document = yield collection.model.findById(id);
       if (!document) {
         this.status = 404;
       }

@@ -1,10 +1,12 @@
 
 'use strict';
 
-function getOne(model) {
+function getOne(collection) {
   return function *(next) {
     try { 
-      this.body = yield model.findById(this.params.id); 
+      this.body = yield collection.model
+        .findById(this.params.id)
+        .populate(collection.populate || []); 
     } 
     catch (err) {
       console.error(err);
