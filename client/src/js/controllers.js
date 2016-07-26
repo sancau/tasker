@@ -155,4 +155,19 @@ var newTypeCtrl = function($http, $state) {
 
   return vm;
 }
-angular.module('app').controller('newTypeCtrl', ['$http', '$state', newTypeCtrl])
+angular.module('app').controller('newTypeCtrl', ['$http', '$state', newTypeCtrl]);
+
+///////////////////////////////////////////////////////////////////////////////
+
+const itemsListCtrl = (Item, Category) => {
+  let vm = this;
+  
+  vm.test = 'ITEMS LIST';
+  
+  return vm;
+};
+
+angular.module('app')
+.controller('itemsListCtrl', [
+  'Item', 'Category', itemsListCtrl     
+]);

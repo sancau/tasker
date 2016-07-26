@@ -19,41 +19,47 @@ var appConfig = function ($stateProvider, $urlRouterProvider) {
   .state('app.types', {
     url: 'types',
     controller: 'typesCtrl as vm',
-    templateUrl: 'views/types.view.html'
+    templateUrl: 'views/types.view.html',
   })
   
   .state('app.newtask', {
     url: 'newtask',
     controller: 'newTaskCtrl as vm',
     templateUrl: 'views/newtask.view.html',
-    resolve: typesResolve
+    resolve: taskgroups
   })
 
   .state('app.newtype', {
     url: 'newtype',
     controller: 'newTypeCtrl as vm',
     templateUrl: 'views/newtype.view.html'
-  });
+  })
+  
+  .state('app.itemslist', {
+    url: 'itemslist',
+    controller: 'itemsListCtrl as vm',
+    templateUrl: 'views/itemslist.view.html'  
+  })
+  
 }
 
-angular.module('app', [
-  'ui.router'
-]);
-
-angular.module('app')
-.config(['$stateProvider', '$urlRouterProvider', appConfig]);
-
-var typesResolve = {
+angular
+  .module('app', ['ui.router'])
+  .config(['$stateProvider', '$urlRouterProvider', appConfig])
+  .constant('BASE_API_URL', 'http://localhost:2500/api');
+  
+  
+var taskgroups = {
   types: [
-    '$http',
-    ($http) => {
-      return $http.get('http://localhost:5555/api/types')
+    'Collection',
+    (Collection) => {
+      let c = new Collection('types');
+      return c.getAll()
       .then(
         (res) => res.data,
-        (err) => console.error(err)
-      );
-    }
-  ]
+        (e) => console.error(e) 
+      )
+    }]
 }
 
 
