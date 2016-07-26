@@ -87,7 +87,8 @@ var typesCtrl = function($http) {
   };
 
   vm.updateType = function(type) {    
-    $http.put('http://localhost:5555/api/types', type)
+    let url = `http://localhost:5555/api/types/${type._id}`;
+    $http.put(url, type)
     .then(
       (res) => {
         vm.togleEditType(type);
