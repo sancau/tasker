@@ -15,10 +15,12 @@ angular.module('app').controller('appCtrl', ['$state', appCtrl]);
 
 ///////////////////////////////////////////////////////////////////////////////
 
-var tasksCtrl = function($http) {
+var tasksCtrl = function(Collection) {
   let vm = this;
+  
+  let c = new Collection('tasks');
 
-  $http.get('http://localhost:5555/api/tasks')
+  c.getAll()
   .then(
     (response) => vm.tasks = response.data,
     (error) => console.error(error)
@@ -26,7 +28,7 @@ var tasksCtrl = function($http) {
 
   vm.confirmTask = function(task) {
     task.isConfirmed = true;
-    $http.put('http://localhost:5555/api/tasks', task)
+    c.save(task)
     .then(
       (res) => {
         console.log('task saved.')
@@ -36,12 +38,7 @@ var tasksCtrl = function($http) {
   };
 
   vm.deleteTask = function(task) {
-    $http({
-      method: 'DELETE',
-      url: 'http://localhost:5555/api/tasks',
-      data: {_id: task._id},
-      headers: {'Content-Type': 'application/json;charset=utf-8'}
-    })
+    c.remove(task)
     .then(
       (res) => {
         let index = vm.tasks.indexOf(task);
@@ -55,26 +52,23 @@ var tasksCtrl = function($http) {
 
   return vm;
 }
-angular.module('app').controller('tasksCtrl', ['$http', tasksCtrl]);
+angular.module('app').controller('tasksCtrl', ['Collection', tasksCtrl]);
 
 ///////////////////////////////////////////////////////////////////////////////
 
-var typesCtrl = function($http) {
+var typesCtrl = function(Collection) {
   let vm = this;
 
-  $http.get('http://localhost:5555/api/types')
+  let c = new Collection('types');
+
+  c.getAll()
   .then(
     (response) => vm.types = response.data,
     (error) => console.error(error)
   );
 
   vm.deleteType = function(type) {
-    $http({
-      method: 'DELETE',
-      url: 'http://localhost:5555/api/types',
-      data: {_id: type._id},
-      headers: {'Content-Type': 'application/json;charset=utf-8'}
-    })
+    c.remove(type)
     .then(
       (res) => {
         let index = vm.types.indexOf(type);
@@ -87,8 +81,7 @@ var typesCtrl = function($http) {
   };
 
   vm.updateType = function(type) {    
-    let url = `http://localhost:5555/api/types/${type._id}`;
-    $http.put(url, type)
+    c.save(type)
     .then(
       (res) => {
         vm.togleEditType(type);
@@ -103,13 +96,14 @@ var typesCtrl = function($http) {
 
   return vm;
 }
-angular.module('app').controller('typesCtrl', ['$http', typesCtrl]);
+angular.module('app').controller('typesCtrl', ['Collection', typesCtrl]);
 
 ///////////////////////////////////////////////////////////////////////////////
 
-var newTaskCtrl = function($http, $state, types) {
+var newTaskCtrl = function($state, types, Collection) {
   let vm = this;
-
+  let c = new Collection('tasks');
+  
   vm.typeOptions = types;
 
   console.log(types);
@@ -121,7 +115,7 @@ var newTaskCtrl = function($http, $state, types) {
       comment: vm.comment
     }; 
     
-    $http.post('http://localhost:5555/api/tasks', newTask)
+    c.save(newTask)
     .then(
       (res) => {
         $state.go('app.tasks');
@@ -132,17 +126,18 @@ var newTaskCtrl = function($http, $state, types) {
 
   return vm;
 }
-angular.module('app').controller('newTaskCtrl', ['$http', '$state', 'types', newTaskCtrl])
+angular.module('app').controller('newTaskCtrl', ['$state', 'types', 'Collection', newTaskCtrl])
 
 ///////////////////////////////////////////////////////////////////////////////
 
-var newTypeCtrl = function($http, $state) {
+var newTypeCtrl = function($state, Collection) {
   let vm = this;
-
+  let c = new Collection('types');
+  
   vm.newType = {}
 
   vm.saveType = function() {    
-    $http.post('http://localhost:5555/api/types', vm.newType)
+    c.save(vm.newType)
     .then(
       (res) => {
         $state.go('app.types');
@@ -155,7 +150,7 @@ var newTypeCtrl = function($http, $state) {
 
   return vm;
 }
-angular.module('app').controller('newTypeCtrl', ['$http', '$state', newTypeCtrl]);
+angular.module('app').controller('newTypeCtrl', ['$state', 'Collection', newTypeCtrl]);
 
 ///////////////////////////////////////////////////////////////////////////////
 
