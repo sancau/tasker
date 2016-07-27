@@ -8,8 +8,6 @@ const baseUrl = '/api';
 
 const endpoints = {
   
-  // WORK
-
   types: {
     url: `${baseUrl}/types`,
     router: routers.generic.crud,
@@ -21,8 +19,6 @@ const endpoints = {
     router: routers.generic.crud,
     collection: collections.Task
   },
-
-  // PERSONAL
 
   categories: {
     url: `${baseUrl}/categories`,

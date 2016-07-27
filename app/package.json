@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "description": "Server side code for tasker app (based on github.com/sancau/koalition)",
   "scripts": {
-    "start": "node src/server.js 8080 tasker",
+    "start": "node src/server.js 5000 tasker",
+    "dev": "nodemon src/server.js 5000 tasker-dev mongodb://localhost:27017",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -24,6 +25,7 @@
     "koa": "^1.2.0",
     "koa-body": "^1.4.0",
     "koa-router": "^5.4.0",
+    "koa-static": "^2.0.0",
     "mongoose": "^4.5.6"
   }
 }

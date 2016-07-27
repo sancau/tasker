@@ -14,12 +14,13 @@ const DATABASE_NAME = process.argv[3];
 }
 
 const MONGO_URL = process.argv[4] ? `${process.argv[4]}/${DATABASE_NAME}` : 
-                    `mongodb://localhost:27017/${DATABASE_NAME}`;
+                `mongodb://${process.env.MONGODB_PORT_27017_TCP_ADDR}` +
+                `:${process.env.MONGODB_PORT_27017_TCP_PORT}/${DATABASE_NAME}`;
 
 const koa = require('koa'),
       koaBody = require('koa-body'),
-      koaStatic = require('koa-static'),
       kcors = require('kcors'),
+      koaStatic = require('koa-static'),
       mongoose = require('mongoose'),
       bluebird = require('bluebird'),
       colors = require('colors');
@@ -39,10 +40,10 @@ process.on("unhandledRejection", (reason, promise) => {
   console.log('An error handler might be missing somewhere.'.yellow);
 });
 
-
 ///////////////////////////////////////////////////////////////////////////////
 
 mongoose.Promise = bluebird;
+console.log(`Connecting to Mongo database on ${MONGO_URL} ... INFO`.blue);
 mongoose.connect(MONGO_URL)
 .then(
   () => {
@@ -51,7 +52,7 @@ mongoose.connect(MONGO_URL)
       const app = koa();
       app.use(koaBody({formidable:{uploadDir: __dirname + '/uploads'}}));
       app.use(kcors());
-      app.use(koaStatic(__dirname + '/public'));
+      app.use(koaStatic(__dirname + '/client/src'));
 
       // plug in all the application level middleware
       for (let item in middleware) {

@@ -49,7 +49,7 @@ const appConfig = function ($stateProvider, $urlRouterProvider) {
 angular
   .module('app', ['ui.router', 'ui.bootstrap', 'ngAnimate'])
   .config(['$stateProvider', '$urlRouterProvider', appConfig])
-  .constant('BASE_API_URL', 'http://localhost:2500/api');
+  .constant('BASE_API_URL', 'http://localhost:5000/api');
   
   
 ///////////////////////////////////////////////////////////////////////////////  
