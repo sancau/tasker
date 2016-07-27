@@ -1,0 +1,51 @@
+.nav-button {
+  font-size: 25px !important;
+  background-color: #efefef;
+  border-radius: 20px !important;
+  margin-right: 10px;
+  margin-bottom: 15px;
+}
+
+body {
+  padding-top: 20px;
+}
+
+/*
+#layout button {
+  font-size: 25px;
+}*/
+
+#layout p {
+  color: #777;
+  font-size: 11px;
+}
+
+.width600 {
+  max-width: 600px;
+}
+
+#newTaskBtn {
+  margin-right: 0px;
+  background-color: #5cb85c;
+}
+
+#newTaskBtn :hover {
+  background-color: #5cb85c;
+}
+
+#newTaskBtn a {
+  color: white !important;
+}
+
+.control-icon:hover {
+  opacity: 1 !important;
+  cursor: pointer;
+}
+
+tr:hover td {
+  background-color: #efefef;
+}
+
+.confirmed {
+  background-color: #5cb85c;
+}

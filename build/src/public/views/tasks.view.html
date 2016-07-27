@@ -1,0 +1,42 @@
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    <h4>Выполненные</h4>
+  </div>
+  <div class="panel-body">
+    <pre ng-if="!vm.tasks.length"> Пока задач нет.. </pre>
+    <table class="table" ng-if="vm.tasks.length">
+      <thead>
+        <th> Время и дата </th>
+        <th> Тип задачи </th>
+        <th> Комната </th>
+        <th> Комментарий </th>
+        <th ng-if="!task.isConfirmed"></th>
+        <th></th>
+      </thead>
+      <tbody>
+        <tr ng-repeat="task in vm.tasks" ng-class="{ success: task.isConfirmed }">
+          <td> {{ task.executionDate | date : "short" }} </td>
+          <td> {{ task.type.name }} </td>
+          <td> {{ task.room }} </td>
+          <td> {{ task.comment }} </td>
+          <td ng-if="!task.isConfirmed">
+            <img 
+              class="pull-right control-icon"
+              src="images/confirm.svg" 
+              alt="Подтвердить задачу"
+              style="width:30px;height:30px; opacity: 0.5;"
+              ng-click="vm.confirmTask(task)">
+          </td>
+          <td colspan="2">
+            <img 
+              class="pull-right control-icon"
+              src="images/bin.svg" 
+              alt="Удалить задачу"
+              style="width:30px;height:30px; opacity: 0.5;"
+              ng-click="vm.deleteTask(task)">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

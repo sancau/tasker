@@ -28,7 +28,7 @@ const appConfig = function ($stateProvider, $urlRouterProvider) {
       url: 'newtask',
       controller: 'newTaskCtrl as vm',
       templateUrl: 'views/newtask.view.html',
-      resolve: taskgroups
+      resolve: types
     })
 
     .state('app.newtype', {
@@ -56,7 +56,7 @@ angular
 // Resolves  
 ///////////////////////////////////////////////////////////////////////////////  
   
-const taskgroups = {
+const types = {
   types: [
     'Collection',
     (Collection) => {
