@@ -46,10 +46,13 @@ const appConfig = function ($stateProvider, $urlRouterProvider) {
   
 };
 
+const devURL = 'http://localhost:5000/api';
+const productionURL = 'http://139.59.144.80/api';
+
 angular
   .module('app', ['ui.router', 'ui.bootstrap', 'ngAnimate'])
   .config(['$stateProvider', '$urlRouterProvider', appConfig])
-  .constant('BASE_API_URL', 'http://localhost:5000/api');
+  .constant('BASE_API_URL', productionURL);
   
   
 ///////////////////////////////////////////////////////////////////////////////  
